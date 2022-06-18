@@ -30,3 +30,11 @@ yarn-error.log*
 
 # vercel
 .vercel
+*node_modules/*
+
+backend/ui-debug.log
+backend/firestore-debug.log
+backend/functions/firestore-debug.log
+backend/functions/ui-debug.log
+.idea/
+backend/package-lock.json
