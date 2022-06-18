@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { onSnapshot } from "firebase/firestore";
-import { auth, createUserProfileDocument } from "../../firebase/firebaseUtils";
-import { setCurrentUser } from "../../redux/user/userActions";
+import { auth, createUserProfileDocument } from "../../../firebase/firebaseUtils";
+import { setCurrentUser } from "../../../redux/user/userActions";
 
 const Layout = ({ children }) => {
     const dispatch = useDispatch();
