@@ -2,7 +2,7 @@ import { Flex, Heading } from "@chakra-ui/react";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 
-export default function NavBanner({ path }) {
+export default function NavBanner({ path, title }) {
     const router = useRouter();
 
     return (
@@ -19,7 +19,7 @@ export default function NavBanner({ path }) {
                 fontSize="16px"
                 fontWeight="700"
             >
-                Company name
+                {title}
             </Heading>
         </Flex>
     )
