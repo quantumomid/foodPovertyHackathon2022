@@ -35,7 +35,7 @@ export default function HomePage() {
         Get started to begin delivering packages to refugess and help make a difference!
       </Text>
       <Button 
-        onClick={() => router.push("/signup/login")}
+        onClick={() => router.push("/login")}
         colorScheme="teal" px="36"
       >
         Get Started
