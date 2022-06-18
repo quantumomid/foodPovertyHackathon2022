@@ -49,23 +49,16 @@ exports.createRecipient = functions.https.onRequest(async (req, res) => {
     // Push the new message into Firestore using the Firebase Admin SDK.
     const writeResult = await admin.firestore().collection('recipient').add(original);
     // Send back a message that we've successfully written the message
-    res.json({result: `User with ID: ${writeResult.id} added.`});
+    res.json({result: `Recipient with ID: ${writeResult.id} created.`});
 });
 
-exports.createRecipient2 = functions.firestore
-    .document('/users/{userId}')
-    .onCreate((snap, context) => {
-        // Grab the current value of what was written to Firestore.
-        const original = snap.data().original;
 
-        // Access the parameter `{userId}` with `context.params`
-        functions.logger.log('Uppercasing', context.params.userId, original);
+exports.getRecipient = functions.https.onRequest(async (req, res) => {
+    // Grab the text parameter.
+    const recipientCode = req.query.text;
 
-       // const uppercase = original;
+    const result = await admin.firestore().collection('recipient').where('id','==', recipientCode).get();
 
-        // You must return a Promise when performing asynchronous tasks inside a Functions such as
-        // writing to Firestore.
-        // Setting an 'uppercase' field in Firestore document returns a Promise.
-        return snap.ref.set({original}, {merge: true});
-    });
-
+    // Send back a message that we've successfully written the message
+    res.json({result: result});
+});
