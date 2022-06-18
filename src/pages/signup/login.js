@@ -8,7 +8,7 @@ export default function LogInPage() {
     return (
         <Flex flexDir="column">
             <NavBanner path="/" />
-            <Heading pt="10" px="5">
+            <Heading pt="10" px="6" fontSize="24px">
                 Log in to your volunteer account
             </Heading>
             <LogInForm />

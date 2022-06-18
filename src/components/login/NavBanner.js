@@ -16,7 +16,7 @@ export default function NavBanner({ path }) {
             />
             <Heading
                 mr="auto" 
-                fontSize="24px"
+                fontSize="16px"
                 fontWeight="700"
             >
                 Company name
