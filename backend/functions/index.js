@@ -212,5 +212,10 @@ app.get('/distributions/:united_nations_id', async(req, res) => {
     
 });
 
+app.get('/distributions/', async(req, res) => {
+    await getAll('distributions', res);
+});
+
+
 // Expose Express API as a single Cloud Function:
 exports.api = functions.https.onRequest(app);
