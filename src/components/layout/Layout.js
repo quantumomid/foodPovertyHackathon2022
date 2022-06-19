@@ -20,6 +20,7 @@ const Layout = ({ children }) => {
               setCurrentUser({
                 id: snapShot.id,
                 ...snapShot.data(),
+                tokenId: user.accessToken
               })
             );
           });
