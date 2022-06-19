@@ -33,10 +33,10 @@ async function getByField(collectionName, fieldName, fieldId, res) {
         .where(fieldName, '==', fieldId)
         .get()
         .then(querySnapshot => {
-            if (!querySnapshot || !querySnapshot.data()) {
+            if (!querySnapshot.docs || !querySnapshot.docs.length > 0) {
                 throw new Error(collectionName.concat(' not found'));
             }
-            res.status(200).json(querySnapshot.data())
+            res.status(200).json(querySnapshot.docs.map(doc => doc.data()))
         })
         .catch(error => res.status(400).send({result : error.message}));
 };
