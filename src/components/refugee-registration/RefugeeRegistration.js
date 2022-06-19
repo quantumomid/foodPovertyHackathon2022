@@ -82,18 +82,25 @@ export default function RefugeeRegistration() {
             }
         }
         try {
-            await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(requestBody),
             });
-            setFormInputs(initialFormInputs);
-            setPrimaryDetails(initialPrimaryDetails);
-            setSubmissionStatus("success");
-            setIsLoading(false);
-            router.push("/dashboard");
+
+            if (response && response.ok) {
+                setFormInputs(initialFormInputs);
+                setPrimaryDetails(initialPrimaryDetails);
+                setSubmissionStatus("success");
+                setIsLoading(false);
+                router.push("/dashboard");
+            } else {
+                const responseJSON = await response.json();
+                setError(responseJSON.result);
+                setIsLoading(false);
+            }
 
         } catch (error) {
             console.log(error);
@@ -153,6 +160,8 @@ export default function RefugeeRegistration() {
                         setFormStep={setFormStep} 
                         onSubmit={handleSubmit}
                         isLoading={isLoading}
+                        error={error} submissionStatus={submissionStatus} handleClose={handleClose} 
+                        successMessage="The refugee has been successfully registered."
                     />
                 );                    
             case 0:
@@ -170,9 +179,10 @@ export default function RefugeeRegistration() {
     return (
         <Flex flexDir="column">
             {renderFormStep()}
-            <Notifications error={error} submissionStatus={submissionStatus} handleClose={handleClose} 
+            {/* <Notifications 
+                error={error} submissionStatus={submissionStatus} handleClose={handleClose} 
                 successMessage="The refugee has been successfully registered."
-            />
+            /> */}
         </Flex>
     )
 }

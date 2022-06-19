@@ -1,11 +1,17 @@
 import { Flex, Heading, Text, Button, Divider } from "@chakra-ui/react";
+import Notifications from "../notifications/Notifications";
 import DetailItem from "./DetailItem";
 import FormStepBanner from "./FormStepBanner";
 
-export default function RegistrationSummary({ familyOrIndividual, setFormStep, primaryDetails, numberOfAdults, numberOfChildren, numberOfInfants, numberOfElders, onSubmit, isLoading }){
+export default function RegistrationSummary({ familyOrIndividual, setFormStep, primaryDetails, numberOfAdults, numberOfChildren, numberOfInfants, numberOfElders, onSubmit, isLoading, error, submissionStatus, handleClose }){
     return (
         <>
             <FormStepBanner targetStep={3} setFormStep={setFormStep} />
+
+            <Notifications 
+                error={error} submissionStatus={submissionStatus} handleClose={handleClose} 
+                successMessage="The refugee has been successfully registered."
+            />
 
             <Flex flexDir="column" px="6" py="10">
                 <Heading>
