@@ -1,6 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import Notifications from "../notifications/Notifications";
 import FormPage0 from "./FormPage0";
 import FormPage1 from "./FormPage1";
@@ -10,6 +11,7 @@ import RegistrationSummary from "./RegistrationSummary";
 
 export default function RefugeeRegistration() {
     const router = useRouter();
+    const tokenId = useSelector(state => state.user.currentUser.tokenId);
 
     const initialFormInputs = { 
         familyOrIndividual: "",
@@ -86,6 +88,7 @@ export default function RefugeeRegistration() {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': tokenId
                 },
                 body: JSON.stringify(requestBody),
             });
