@@ -17,7 +17,7 @@ export default function Search() {
     const handleSubmit = async ( e) => {
         e.preventDefault()
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient/${searchField}`, {
+            const response = await fetch(`https://us-central1-foodpovertyhackathon.cloudfunctions.net/api/recipient/${searchField}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${tokenId}`

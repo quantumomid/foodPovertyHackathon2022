@@ -84,7 +84,7 @@ export default function RefugeeRegistration() {
             }
         }
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient`, {
+            const response = await fetch(`https://us-central1-foodpovertyhackathon.cloudfunctions.net/api/recipient`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',

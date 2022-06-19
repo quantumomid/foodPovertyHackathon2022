@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { BsPersonFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
-import UserInfoCard from '../../components/Card/UserInfoCard'
-import NavBanner from "../../components/nav-banner/NavBanner";
+import UserInfoCard from '../../../components/Card/UserInfoCard'
+import NavBanner from "../../../components/nav-banner/NavBanner";
 
 export default function UserPage() {
   const [userData, setUserData] = useState(null)
@@ -16,7 +16,7 @@ export default function UserPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient/${userId}`, {
+      const response = await fetch(`https://us-central1-foodpovertyhackathon.cloudfunctions.net/api/recipient/${userId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${tokenId}`
@@ -70,7 +70,7 @@ export default function UserPage() {
               <UserInfoCard topText="12/06/2022" bottomText="Basic Universal Pack" />
               <UserInfoCard topText="12/05/2022" bottomText="Basic Universal Pack" />
               <UserInfoCard topText="12/05/2022" bottomText="Baby Pack" />
-              <Button colorScheme="teal" onClick={() => router.push('/history')} size='sm' width={"40vw"}> View full history</Button>
+              <Button colorScheme="teal" onClick={() => router.push(`${userId}/history`)} size='sm' width={"40vw"}> View full history</Button>
             </VStack>
 
             <VStack
