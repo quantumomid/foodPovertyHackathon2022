@@ -1,7 +1,7 @@
 import { Button, Flex, FormControl, Input, InputGroup, InputLeftElement, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { BsSearch } from "react-icons/bs";
-import NavBanner from "../../components/NavBanner/NavBanner";
+import NavBanner from "../../components/nav-banner/NavBanner";
 import { useRouter } from "next/router";
 import { setCurrentRecipient } from "../../../redux/user/userActions";
 import { useDispatch } from "react-redux";

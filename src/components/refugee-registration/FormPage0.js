@@ -1,5 +1,5 @@
 import { Flex, Heading, FormLabel, FormControl, Select, Input, Button } from "@chakra-ui/react";
-import NavBanner from "../NavBanner/NavBanner";
+import NavBanner from "../nav-banner/NavBanner";
 
 export default function FormPage0({ formInputs, handleFormInputChange, setFormStep }) {
     return (

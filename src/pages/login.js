@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import LogInForm from "../components/login/LogInForm";
-import NavBanner from "../components/NavBanner/NavBanner";
+import NavBanner from "../components/nav-banner/NavBanner";
 
 export default function LogInPage() {
     const router = useRouter();
