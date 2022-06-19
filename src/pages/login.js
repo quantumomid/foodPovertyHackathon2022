@@ -1,9 +1,17 @@
 import { Flex, Heading } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import LogInForm from "../components/login/LogInForm";
 import NavBanner from "../components/nav-banner/NavBanner";
 
 export default function LogInPage() {
+    const router = useRouter();
+    const { currentUser } = useSelector(state => state.user);
 
+    useEffect(() => {
+        if(currentUser) router.replace("/dashboard");
+    }, [currentUser, router]);
 
     return (
         <Flex flexDir="column">
