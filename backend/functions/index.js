@@ -152,7 +152,8 @@ app.post('/distributions/:united_nations_id', async(req,res) => {
     
     if (recipientExists.docs.length == 0) {
         res.status(400);
-        res.json({result: "Recipient of this distribution not found"})
+        res.json({result: "Recipient of this distribution not found"});
+        return;
     }
 
     const distribution_id = `${uuidv4()}`;
@@ -192,6 +193,20 @@ app.post('/distributions/:united_nations_id', async(req,res) => {
             timestamp}
         );
     }
+});
+
+app.get('/distributions/:united_nations_id', async(req, res) => {
+    const united_nations_id = req.params.united_nations_id;
+
+    const readResult = await db.collection('distributions').doc(united_nations_id).get();
+
+    if (!readResult.exists) {
+        res.status(404);
+        res.json({result: `Distribution history for recipient ID: ${united_nations_id} not found.`});
+    } else {
+        res.json(readResult.data());
+    }
+    
 });
 
 // Expose Express API as a single Cloud Function:

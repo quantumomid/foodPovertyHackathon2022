@@ -38,3 +38,4 @@ backend/functions/firestore-debug.log
 backend/functions/ui-debug.log
 .idea/
 backend/package-lock.json
+backend/firebase-debug.log
