@@ -2,6 +2,7 @@
 const functions = require('firebase-functions');
 const express = require('express');
 const cors = require('cors');
+const { v4: uuidv4 } = require('uuid');
 const app = express();
 
 // The Firebase Admin SDK to access Firestore.
@@ -82,30 +83,57 @@ app.post('/recipient', async(req, res) => {
     }
 });
 
+app.post('/distributions/:united_nations_id', async(req,res) => {
+    // Check this UN ID is a valid one
+    const recipientId = req.params.united_nations_id;
+    const recipientExists = await db.collection('recipient')
+        .where('united_nations_id','==', recipientId)
+        .get();
+    
+    if (recipientExists.docs.length == 0) {
+        res.status(400);
+        res.json({result: "Recipient of this distribution not found"})
+    }
+
+    const distribution_id = `${uuidv4()}`;
+    const timestamp = `${new Date().toISOString()}`;
+
+    // Check if distribution array exists for this recipient
+    const readResult = await db.collection('distributions').doc(recipientId).get();
+
+    if (readResult.exists) {
+        const updateResult = await db.collection('distributions').doc(recipientId).update({
+            distributions: [
+                ...readResult.data().distributions,
+                {
+                    ...req.body,
+                    distribution_id,
+                    timestamp
+                }
+            ]
+        });
+
+        res.json({ 
+            distribution_id,
+            timestamp}
+        );
+
+    } else {
+        const writeResult = await db.collection('distributions').doc(recipientId).set({
+            distributions: [{
+                ...req.body,
+                distribution_id,
+                timestamp
+            }]
+        });
+
+        res.json({ 
+            distribution_id,
+            timestamp}
+        );
+    }
+});
+
 // Expose Express API as a single Cloud Function:
 exports.api = functions.https.onRequest(app);
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-
-/* exports.createRecipient = functions.https.onRequest(async (req, res) => {
-    // Grab the text parameter.
-    const original = req.body;
-    // Push the new message into Firestore using the Firebase Admin SDK.
-    const writeResult = await admin.firestore().collection('recipient').add(original);
-    // Send back a message that we've successfully written the message
-    res.json({result: `Recipient with ID: ${writeResult.id} created.`});
-});
-
-
-exports.getRecipient = functions.https.onRequest(async (req, res) => {
-    // Grab the text parameter.
-    const recipientCode = req.query.text;
-
-    const result = await admin.firestore().collection('recipient')
-        .where('id','==', recipientCode)
-        .get();
-
-    // Send back a message that we've successfully written the message
-    res.json( result.docs[0].data());
-}); */
