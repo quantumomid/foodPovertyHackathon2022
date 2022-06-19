@@ -1,6 +1,6 @@
 import { Flex, Heading } from "@chakra-ui/react";
 import LogInForm from "../components/login/LogInForm";
-import NavBanner from "../components/login/NavBanner";
+import NavBanner from "../components/nav-banner/NavBanner";
 
 export default function LogInPage() {
 

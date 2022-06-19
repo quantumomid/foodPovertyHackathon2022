@@ -8,7 +8,7 @@ export default function NavBanner({ path, title }) {
     return (
         <Flex 
             alignItems="center" justifyContent="center"
-            bg="white" py="2"
+            bg="white" py="2" w="full"
         >
             <ChevronLeftIcon 
                 w="8" h="10" mr="auto"
