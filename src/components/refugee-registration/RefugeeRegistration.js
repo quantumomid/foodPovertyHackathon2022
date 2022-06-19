@@ -1,7 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { useState } from "react";
-import NavBanner from "../nav-banner/NavBanner";
 import FormPage0 from "./FormPage0";
+import FormPage1 from "./FormPage1";
 
 export default function RefugeeRegistration() {
     const [ formInputs, setFormInputs ] = useState({ 
@@ -9,6 +9,14 @@ export default function RefugeeRegistration() {
         camp: "",
         tentId: "",
      });
+
+     const [ primaryDetails, setPrimaryDetails ] = useState({
+        firstname: "",
+        surname: "",
+        DOB: "",
+        unID: "",
+        contactNumber: ""
+    })
 
      const [ formStep, setFormStep ] = useState(0);
 
@@ -20,8 +28,24 @@ export default function RefugeeRegistration() {
         }))
     }
 
+    const handlePrimaryDetailsChange = (e) => {
+        const { name, value } = e.target;
+        setPrimaryDetails((currentPrimaryDetails) => ({
+            ...currentPrimaryDetails,
+            [name]: value
+        }))
+    }
+
     const renderFormStep = () => {
         switch(formStep) {
+            case 1:
+                return (
+                    <FormPage1 
+                        primaryDetails={primaryDetails} 
+                        handlePrimaryDetailsChange={handlePrimaryDetailsChange}
+                        setFormStep={setFormStep} 
+                    />
+                );                
             case 0:
             default:
                 return (
@@ -36,7 +60,6 @@ export default function RefugeeRegistration() {
 
     return (
         <Flex flexDir="column">
-            <NavBanner path="" title="Refugee registration" />
             {renderFormStep()}
         </Flex>
     )
