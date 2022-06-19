@@ -2,6 +2,8 @@ import { Flex } from "@chakra-ui/react";
 import { useState } from "react";
 import FormPage0 from "./FormPage0";
 import {useRouter} from "next/router";
+import {useSelector} from "react-redux";
+import Notifications from "../notifications/Notifications";
 /*import FormPage1 from "./FormPage1";
 import FormPage2 from "./FormPage2";
 import FormPage3 from "./FormPage3";
@@ -9,31 +11,34 @@ import RegistrationSummary from "./DeliverPackageSummary"; */
 
 export default function DeliverPackage() {
     const router = useRouter();
-    const [formInputs, setFormInputs] = useState({
-        refugeeName: "test",
-        refugeeCode: "id1",
-        tentCode:"test",
-        campCode:"test",
-        charityCode:"test",
-        staffName:"test",
-        staffForename: "test",
-        staffSurname: "test",
-        staffEmail: "test",
-        description:"test",
-     });
+    const tokenId = useSelector(state => state.user.currentUser?.tokenId);
+    const user = useSelector(state => state.user.currentUser);
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [submissionStatus, setSubmissionStatus] = useState("");
+
+    const handleClose = () => {
+        setError("");
+        setSubmissionStatus("");
+    }
+
+    const initialFormInputs = {
+        recipientName: "",
+        recipientCode: "",
+        tentCode:"tentCode",
+        campCode:"campCode",
+        charityCode: user?.profile?.volunteerCharity,
+        staffForename: user?.profile?.firstName,
+        staffSurname: user?.profile?.lastName,
+        staffEmail: user?.email,
+        description:"description",
+    };
+
+    const [formInputs, setFormInputs] = useState(initialFormInputs);
 
      const [noOfPackages, setNoOfPackages] = useState(1);
      const [items, setItems] = useState([]);
-
-     const [recipientDetails, setRecipientDetails ] = useState({
-        firstname: "",
-        surname: "",
-        DOB: "",
-        unID: "",
-        contactNumber: "",
-        medicalRequirements: "",
-        otherSpecialNeeds: "",
-    })
 
     const [ formStep, setFormStep ] = useState(0);
 
@@ -45,24 +50,9 @@ export default function DeliverPackage() {
         }))
     }
 
-    const handlePrimaryDetailsChange = (e) => {
-        const { name, value } = e.target;
-        setPrimaryDetails((currentPrimaryDetails) => ({
-            ...currentPrimaryDetails,
-            [name]: value
-        }))
-    }
-
-    const onConfirmDeliverPackage = () => {
-        let url = 'https://us-central1-foodpovertyhackathon.cloudfunctions.net/api/distributions/'+ formInputs.refugeeCode;
-        let options = {
-            method: 'POST',
-            //mode: 'cors',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json;charset=UTF-8'
-            },
-            body: JSON.stringify({
+    const onConfirmDeliverPackage = async () => {
+        try {
+            const requestBody = {
                 recipient: {
                     code: formInputs.refugeeCode
                 },
@@ -75,7 +65,7 @@ export default function DeliverPackage() {
                 charity: {
                     code: formInputs.charityCode
                 },
-                staff : {
+                staff: {
                     forename: formInputs.staffForename,
                     surname: formInputs.staffSurname,
                     email: formInputs.email
@@ -84,22 +74,33 @@ export default function DeliverPackage() {
                 quantity: noOfPackages,
                 description: formInputs.description,
                 items: items
-            })
-        };
+            };
 
-        fetch(url, options).then(
-            response => {
-                if (response && response.ok) {
-                    //TODO show banner on other page saying success package delivered
-                    let data =  response.json();
-                    // do something with data
-                    router.push('/dashboard');
-                }
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/distributions/${formInputs.recipientCode}`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenId}`
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (response && response.ok) {
+                setFormInputs(initialFormInputs);
+                setSubmissionStatus("success");
+                setIsLoading(false);
+                router.push("/dashboard");
+            } else {
+                const responseJSON = await response.json();
+                setError(responseJSON.result);
+                setIsLoading(false);
             }
-        ).catch(error => {
-            //TODO do something
-            error.log("Failed deliver package request: " + error);
-        })
+
+        } catch (error) {
+            console.log(error);
+            setError(error.message);
+            setIsLoading(false);
+        }
     }
 
     const renderFormStep = () => {
@@ -122,6 +123,9 @@ export default function DeliverPackage() {
     return (
         <Flex flexDir="column">
             {renderFormStep()}
+            <Notifications error={error} submissionStatus={submissionStatus} handleClose={handleClose}
+                           successMessage="The refugee has been successfully registered."
+            />
         </Flex>
     )
 }

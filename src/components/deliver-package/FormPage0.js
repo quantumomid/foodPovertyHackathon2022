@@ -9,7 +9,16 @@ export default function FormPage0({ formInputs, handleFormInputChange, setFormSt
 
             <Flex flexDir="column" h="90vh" px="6" pt="10">
                 <Heading>Deliver a package</Heading>
-                
+
+                <FormControl>
+                    <FormLabel htmlFor="recipientCode">Enter Refugee UN Code</FormLabel>
+                    <Input
+                        id="recipientCode" name="recipientCode" type="text" bg="white"
+                        value={formInputs.recipientCode}
+                        onChange={handleFormInputChange}
+                    />
+                </FormControl>
+
                 <FormControl py="10">
                     <FormLabel htmlFor="packageType">Select a package</FormLabel>
                     <Select 
