@@ -1,17 +1,22 @@
-import { Flex, Heading, FormLabel, FormControl, Select, Input, Button } from "@chakra-ui/react";
+import { Flex, Heading, FormLabel, FormControl, Input, Button, Text } from "@chakra-ui/react";
 import DOBInput from "./DOBInput";
 import FormStepBanner from "./FormStepBanner";
 
-export default function FormPage1({ primaryDetails, handlePrimaryDetailsChange, setFormStep }) {
+export default function FormPage1({ familyOrIndividual, primaryDetails, handlePrimaryDetailsChange, setFormStep }) {
     return (
         <>
-            <FormStepBanner currentStep={1} setFormStep={setFormStep} />
+            <FormStepBanner targetStep={0} setFormStep={setFormStep} />
 
             <Flex flexDir="column" h="90vh" px="6" pt="10">
 
-                <Heading>Individual registration</Heading>
+                <Heading>
+                    { familyOrIndividual==="individual" ? "Individual registration" : "Family registration"}
+                </Heading>
+                <Text fontSize="20px" fontWeight="500">
+                    { familyOrIndividual==="individual" ? "Enter their details below" : "Enter the details for the head of the family."}
+                </Text>
                 
-                <FormControl>
+                <FormControl py="10">
                     <FormLabel htmlFor="firstName">First name</FormLabel>
                     <Input 
                         id="firstname" name="firstname" type="text" bg="white"
@@ -40,7 +45,7 @@ export default function FormPage1({ primaryDetails, handlePrimaryDetailsChange, 
                     />
                 </FormControl>
 
-                <FormControl>
+                <FormControl py="10h">
                     <FormLabel htmlFor="contactNumber">Contact number</FormLabel>
                     <Input 
                         id="contactNumber" name="contactNumber" type="tel" bg="white"
@@ -52,7 +57,7 @@ export default function FormPage1({ primaryDetails, handlePrimaryDetailsChange, 
                 <Button 
                     colorScheme="teal"
                     mt="auto"
-                    onClick={() => setFormStep(2)}
+                    onClick={() => setFormStep(familyOrIndividual==="individual" ? 3: 2)} // Individuals go straight to step 3
                 >
                         Continue
                 </Button>

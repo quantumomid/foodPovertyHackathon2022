@@ -1,7 +1,7 @@
 import { Flex, Heading } from "@chakra-ui/react";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 
-export default function FormStepBanner({ currentStep, setFormStep }) {
+export default function FormStepBanner({ targetStep, setFormStep }) {
 
     return (
         <Flex 
@@ -10,7 +10,7 @@ export default function FormStepBanner({ currentStep, setFormStep }) {
         >
             <ChevronLeftIcon 
                 w="8" h="10" mr="auto"
-                onClick={() => setFormStep(currentStep-1)}
+                onClick={() => setFormStep(targetStep)}
             />
             <Heading
                 mr="auto" 

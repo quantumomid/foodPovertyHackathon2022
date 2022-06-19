@@ -2,6 +2,8 @@ import { Flex } from "@chakra-ui/react";
 import { useState } from "react";
 import FormPage0 from "./FormPage0";
 import FormPage1 from "./FormPage1";
+import FormPage2 from "./FormPage2";
+import FormPage3 from "./FormPage3";
 
 export default function RefugeeRegistration() {
     const [ formInputs, setFormInputs ] = useState({ 
@@ -10,12 +12,19 @@ export default function RefugeeRegistration() {
         tentId: "",
      });
 
+     const [ numberOfAdults, setNumberOfAdults ] = useState(0);
+     const [ numberOfChildren, setNumberOfChildren ] = useState(0);
+     const [ numberOfInfants, setNumberOfInfants ] = useState(0);
+     const [ numberOfElders, setNumberOfElders ] = useState(0);
+
      const [ primaryDetails, setPrimaryDetails ] = useState({
         firstname: "",
         surname: "",
         DOB: "",
         unID: "",
-        contactNumber: ""
+        contactNumber: "",
+        medicalRequirements: "",
+        otherSpecialNeeds: "",
     })
 
      const [ formStep, setFormStep ] = useState(0);
@@ -29,6 +38,7 @@ export default function RefugeeRegistration() {
     }
 
     const handlePrimaryDetailsChange = (e) => {
+        console.log(e)
         const { name, value } = e.target;
         setPrimaryDetails((currentPrimaryDetails) => ({
             ...currentPrimaryDetails,
@@ -40,7 +50,30 @@ export default function RefugeeRegistration() {
         switch(formStep) {
             case 1:
                 return (
-                    <FormPage1 
+                    <FormPage1
+                        familyOrIndividual={formInputs.familyOrIndividual.toLowerCase()}
+                        primaryDetails={primaryDetails} 
+                        handlePrimaryDetailsChange={handlePrimaryDetailsChange}
+                        setFormStep={setFormStep} 
+                    />
+                );
+            // FormPage2 is only for family (individuals go straight to step 3)
+            case 2:
+                return (
+                    <FormPage2
+                        numberOfAdults={numberOfAdults} setNumberOfAdults={setNumberOfAdults}
+                        numberOfChildren={numberOfChildren} setNumberOfChildren={setNumberOfChildren}
+                        numberOfInfants={numberOfInfants} setNumberOfInfants={setNumberOfInfants}
+                        numberOfElders={numberOfElders} setNumberOfElders={setNumberOfElders}
+                        primaryDetails={primaryDetails} 
+                        handlePrimaryDetailsChange={handlePrimaryDetailsChange}
+                        setFormStep={setFormStep} 
+                    />
+                );       
+            case 3:
+                return (
+                    <FormPage3
+                        familyOrIndividual={formInputs.familyOrIndividual.toLowerCase()}
                         primaryDetails={primaryDetails} 
                         handlePrimaryDetailsChange={handlePrimaryDetailsChange}
                         setFormStep={setFormStep} 
