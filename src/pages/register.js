@@ -1,5 +1,8 @@
+import withAuthenticatedHOC from "../components/authentication/withAuthenticationHOC";
 import RefugeeRegistration from "../components/refugee-registration/RefugeeRegistration";
 
-export default function RegisterPage() {
+function RegisterRefugeePage() {
     return <RefugeeRegistration />
 }
+
+export default withAuthenticatedHOC(RegisterRefugeePage)

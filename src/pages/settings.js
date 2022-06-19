@@ -2,8 +2,9 @@ import { Flex, Heading, Button } from "@chakra-ui/react";
 import NavBanner from "../components/nav-banner/NavBanner";
 import { signOut } from "@firebase/auth";
 import { auth } from "../../firebase/firebaseUtils";
+import withAuthenticatedHOC from "../components/authentication/withAuthenticationHOC";
 
-export default function SettingsPage(){
+function SettingsPage(){
 
     const handleSignOut = async () => {
         try {
@@ -25,3 +26,5 @@ export default function SettingsPage(){
         </>
     )
 }
+
+export default withAuthenticatedHOC(SettingsPage);
