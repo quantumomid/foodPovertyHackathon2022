@@ -46,11 +46,11 @@ async function getAll(collectionName, res){
         .get()
         .then(querySnapshot => {
             if (!querySnapshot.docs || !querySnapshot.docs.length > 0) {
-                throw new Error(collectionName.concat('not found'));
+                throw new Error(collectionName.concat(' not found'));
             }
             res.status(200).json(querySnapshot.docs.map(doc => doc.data()))
         })
-        .catch(error => res.status(400).send(error.message));
+        .catch(error => res.status(400).send({result : error.message}));
 }
 
 // Helper Functions
@@ -119,14 +119,14 @@ app.post('/recipient', async(req, res) => {
 });
 
 
-app.get('/charity/:charityCode', (req, res) => {
+app.get('/charity/:charityCode', async(req, res) => {
     // Grab the text parameter.
     const docId = req.params.charityCode;
-    getByDocId('charity', docId, res);
+    await getByDocId('charity', docId, res);
 });
 
 app.get('/charity', async(req, res) => {
-    getAll('charity', res);
+    await getAll('charity', res);
 });
 
 app.post('/charity', async(req, res) => {
