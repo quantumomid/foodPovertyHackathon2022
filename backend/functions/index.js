@@ -2,6 +2,7 @@
 const functions = require('firebase-functions');
 const express = require('express');
 const cors = require('cors');
+const { v4: uuidv4 } = require('uuid');
 const app = express();
 
 // The Firebase Admin SDK to access Firestore.
@@ -14,8 +15,8 @@ const db = admin.firestore();
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
 
-function getByDocId(collectionName, docId, res) {
-   db.collection(collectionName)
+async function getByDocId(collectionName, docId, res) {
+   await db.collection(collectionName)
         .doc(docId)
         .get()
         .then(querySnapshot => {
@@ -27,8 +28,8 @@ function getByDocId(collectionName, docId, res) {
         .catch(error => res.status(400).send({result : error.message}));
 }
 
-function getByField(collectionName, fieldName, fieldId, res) {
-    db.collection(collectionName)
+async function getByField(collectionName, fieldName, fieldId, res) {
+    await db.collection(collectionName)
         .where(fieldName, '==', fieldId)
         .get()
         .then(querySnapshot => {
@@ -40,8 +41,8 @@ function getByField(collectionName, fieldName, fieldId, res) {
         .catch(error => res.status(400).send({result : error.message}));
 };
 
-function getAll(collectionName, res){
-    db.collection(collectionName)
+async function getAll(collectionName, res){
+    await db.collection(collectionName)
         .get()
         .then(querySnapshot => {
             if (!querySnapshot.docs || !querySnapshot.docs.length > 0) {
@@ -76,10 +77,10 @@ async function saveDoc(collectionName, docId, doc, res){
 }
 
 
-app.get('/recipient/:recipientCode', (req, res) => {
+app.get('/recipient/:recipientCode', async(req, res) => {
     // Grab the text parameter.
     const docId = req.params.recipientCode;
-    getByDocId('recipient', docId, res);
+    await getByDocId('recipient', docId, res);
 });
 
 app.get('/recipient', async(req, res) => {
@@ -87,19 +88,19 @@ app.get('/recipient', async(req, res) => {
     const barcode = req.query.barcode;
     const category = req.query.category;
     if (barcode) {
-        getByField('recipient','barcode', barcode, res);
+        await getByField('recipient','barcode', barcode, res);
     } else if (category) {
         const Category = {
             FAMILY: "FAMILY",
             INDIVIDUAL: "INDIVIDUAL"
         };
         if (category in Category){
-            getByField('recipient','category', category, res);
+            await getByField('recipient','category', category, res);
         } else {
             res.status(400).end("Invalid Category!");
         }
     } else {
-         getAll('recipient', res);
+         await getAll('recipient', res);
     }
 });
 
@@ -139,6 +140,57 @@ app.post('/charity', async(req, res) => {
         await saveDoc('charity', charityCode, original, res);
     } catch (e) {
         res.status(400).send({result : e.message});
+    }
+});
+
+app.post('/distributions/:united_nations_id', async(req,res) => {
+    // Check this UN ID is a valid one
+    const recipientId = req.params.united_nations_id;
+    const recipientExists = await db.collection('recipient')
+        .where('united_nations_id','==', recipientId)
+        .get();
+    
+    if (recipientExists.docs.length == 0) {
+        res.status(400);
+        res.json({result: "Recipient of this distribution not found"})
+    }
+
+    const distribution_id = `${uuidv4()}`;
+    const timestamp = `${new Date().toISOString()}`;
+
+    // Check if distribution array exists for this recipient
+    const readResult = await db.collection('distributions').doc(recipientId).get();
+
+    if (readResult.exists) {
+        const updateResult = await db.collection('distributions').doc(recipientId).update({
+            distributions: [
+                ...readResult.data().distributions,
+                {
+                    ...req.body,
+                    distribution_id,
+                    timestamp
+                }
+            ]
+        });
+
+        res.json({ 
+            distribution_id,
+            timestamp}
+        );
+
+    } else {
+        const writeResult = await db.collection('distributions').doc(recipientId).set({
+            distributions: [{
+                ...req.body,
+                distribution_id,
+                timestamp
+            }]
+        });
+
+        res.json({ 
+            distribution_id,
+            timestamp}
+        );
     }
 });
 
