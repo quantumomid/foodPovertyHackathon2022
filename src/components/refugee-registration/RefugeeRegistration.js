@@ -39,7 +39,6 @@ export default function RefugeeRegistration() {
     }
 
     const handlePrimaryDetailsChange = (e) => {
-        console.log(e)
         const { name, value } = e.target;
         setPrimaryDetails((currentPrimaryDetails) => ({
             ...currentPrimaryDetails,

@@ -7,7 +7,7 @@ export default function RegistrationSummary({ familyOrIndividual, setFormStep, p
         <>
             <FormStepBanner targetStep={3} setFormStep={setFormStep} />
 
-            <Flex flexDir="column" px="6" pt="10">
+            <Flex flexDir="column" px="6" py="10">
                 <Heading>
                     { familyOrIndividual==="individual" ? "Individual registration" : "Family registration"}
                 </Heading>
@@ -50,7 +50,7 @@ export default function RegistrationSummary({ familyOrIndividual, setFormStep, p
                 }
 
                 {/* Additional needs */}
-                <Flex as="section" flexDir="column" pt="10">
+                <Flex as="section" flexDir="column" py="10">
                     <Heading fontSize="20px" pb="3">Additional needs</Heading>
                     <Flex as="dl" flexDir="column">
                         <DetailItem title="Medical requirements" value={primaryDetails.medicalRequirements} />
@@ -62,8 +62,8 @@ export default function RegistrationSummary({ familyOrIndividual, setFormStep, p
 
                 <Button 
                         colorScheme="teal"
-                        my="8" py="24px"
-                        // mt="auto"
+                        py="24px"
+                        mt={familyOrIndividual==="individual" ? "auto" : "unset"}
                         // onClick={onSubmit}
                     >
                             Confirm
