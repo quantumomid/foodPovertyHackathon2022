@@ -2,7 +2,7 @@ import { Flex, Heading, Text, Button, Divider } from "@chakra-ui/react";
 import DetailItem from "./DetailItem";
 import FormStepBanner from "./FormStepBanner";
 
-export default function RegistrationSummary({ familyOrIndividual, setFormStep, primaryDetails, numberOfAdults, numberOfChildren, numberOfInfants, numberOfElders }){
+export default function RegistrationSummary({ familyOrIndividual, setFormStep, primaryDetails, numberOfAdults, numberOfChildren, numberOfInfants, numberOfElders, onSubmit, isLoading }){
     return (
         <>
             <FormStepBanner targetStep={3} setFormStep={setFormStep} />
@@ -41,7 +41,7 @@ export default function RegistrationSummary({ familyOrIndividual, setFormStep, p
                                 <Divider my="3" />
                                 <DetailItem title="Children" value={numberOfChildren} />
                                 <Divider my="3" />
-                                <DetailItem title="Infants" value={numberOfChildren} />
+                                <DetailItem title="Infants" value={numberOfInfants} />
                                 <Divider my="3" />
                                 <DetailItem title="Elders" value={numberOfElders} />
                             </Flex>
@@ -64,7 +64,9 @@ export default function RegistrationSummary({ familyOrIndividual, setFormStep, p
                         colorScheme="teal"
                         py="24px"
                         mt={familyOrIndividual==="individual" ? "auto" : "unset"}
-                        // onClick={onSubmit}
+                        type="submit"
+                        onClick={onSubmit}
+                        isLoading={isLoading}
                     >
                             Confirm
                 </Button>

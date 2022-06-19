@@ -2,7 +2,7 @@ import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input,
 import { createUserWithEmailAndPassword } from "@firebase/auth";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { auth } from "../../firebase/firebaseUtils";
+import { auth, createUserProfileDocument } from "../../firebase/firebaseUtils";
 
 export default function Signup() {
   const router = useRouter();
@@ -20,7 +20,9 @@ export default function Signup() {
     e.preventDefault();
     try {
       console.log(email, password);
-      await createUserWithEmailAndPassword(auth, email, password);
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      await createUserProfileDocument(user, { firstName, lastName, email, volunteerCharity, volunteerCamp });
+
       //  save user to firestore here
       /* 
 
@@ -67,29 +69,29 @@ export default function Signup() {
         <FormControl gap="36" isRequired isInvalid={error}>
           <FormControl mt="30px" id="firstName" isRequired>
             <FormLabel mb="0">First name</FormLabel>
-            <Input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+            <Input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} bg="white"/>
           </FormControl>
 
           <FormControl mt="30px" id="lastName" isRequired>
             <FormLabel mb="0">Last name</FormLabel>
-            <Input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+            <Input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} bg="white" />
           </FormControl>
 
           <FormControl mt="30px" id="email" isRequired>
             <FormLabel mb="0">Email address</FormLabel>
-            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} bg="white"/>
           </FormControl>
 
           <FormControl mt="30px" id="password" isRequired>
             <FormLabel mb="0">Create password</FormLabel>
-            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} bg="white"/>
           </FormControl>
 
           <FormControl mt="30px" id="charity">
             <Text mb="0" mt="8px" fontWeight="medium">
               Which charity are you voluteering for?
             </Text>
-            <Select placeholder={volunteerCharity} onChange={(e) => setVolunteerCharity(e.target.value)}>
+            <Select placeholder={volunteerCharity} onChange={(e) => setVolunteerCharity(e.target.value)} bg="white">
               {/* this would be an arrray coming from what we have in the db */}
               {/*  array.map(....) */}
               <option value="option1">One Nation</option>
@@ -102,7 +104,7 @@ export default function Signup() {
             <Text mb="0" mt="8px" fontWeight="medium">
               Which camp are you voluteering in?
             </Text>
-            <Select placeholder={volunteerCamp} onChange={(e) => setVolunteerCamp(e.target.value)}>
+            <Select placeholder={volunteerCamp} onChange={(e) => setVolunteerCamp(e.target.value)} bg="white">
               {/* this would be an arrray coming from what we have in the db */}
               {/*  array.map(....) */}
               <option value="option1">Lebanon inner city camp</option>

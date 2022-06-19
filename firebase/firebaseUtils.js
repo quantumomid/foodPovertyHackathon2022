@@ -21,11 +21,10 @@ const createUserProfileDocument = async (userAuth, additionalData) => {
 
     //Therefore if the snapshot doesnt exist then we will create a new user 
     if (!userSnap.exists()) {
-        const { displayName, email } = userAuth
+        const { email } = userAuth
         const createdAt = new Date()
         try {
             await setDoc(userRef, {
-                displayName,
                 email,
                 createdAt,
                 ...additionalData
