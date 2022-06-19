@@ -1,25 +1,23 @@
 import { Flex, Heading } from "@chakra-ui/react";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
-import { useRouter } from "next/router";
 
-export default function NavBanner({ path, title }) {
-    const router = useRouter();
+export default function FormStepBanner({ targetStep, setFormStep }) {
 
     return (
         <Flex 
             alignItems="center" justifyContent="center"
-            bg="white" py="2"
+            bg="white" py="2" w="full"
         >
             <ChevronLeftIcon 
                 w="8" h="10" mr="auto"
-                onClick={() => router.push(path)}
+                onClick={() => setFormStep(targetStep)}
             />
             <Heading
                 mr="auto" 
                 fontSize="16px"
                 fontWeight="700"
             >
-                {title}
+                Refugee registration
             </Heading>
         </Flex>
     )
