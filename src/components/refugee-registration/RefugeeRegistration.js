@@ -1,4 +1,5 @@
 import { Flex } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import Notifications from "../notifications/Notifications";
 import FormPage0 from "./FormPage0";
@@ -8,6 +9,8 @@ import FormPage3 from "./FormPage3";
 import RegistrationSummary from "./RegistrationSummary";
 
 export default function RefugeeRegistration() {
+    const router = useRouter();
+
     const initialFormInputs = { 
         familyOrIndividual: "",
         camp: "",
@@ -90,6 +93,7 @@ export default function RefugeeRegistration() {
             setPrimaryDetails(initialPrimaryDetails);
             setSubmissionStatus("success");
             setIsLoading(false);
+            router.push("/dashboard");
 
         } catch (error) {
             console.log(error);
