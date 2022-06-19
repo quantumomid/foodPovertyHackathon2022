@@ -4,6 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { onSnapshot } from "firebase/firestore";
 import { auth, createUserProfileDocument } from "../../../firebase/firebaseUtils";
 import { setCurrentUser } from "../../../redux/user/userActions";
+import CustomHead from "../custom-head-meta/CustomHead";
 
 const Layout = ({ children }) => {
     const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const Layout = ({ children }) => {
 
     return (
       <React.Fragment>
+        <CustomHead />
         { children }
       </React.Fragment>
     )
