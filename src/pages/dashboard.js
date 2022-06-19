@@ -16,7 +16,7 @@ function DashboardPage() {
     <>
       <Banner heading="My Dashboard" />
       <VStack spacing={4} align="stretch" m="5" mt="20">
-        <Heading>username here</Heading>
+        {/* <Heading>username here</Heading> */}
         {navLinks.map((link, i) => (
           <Navigation key={i} text={link.text} color="black" path={link.path} icon={link.icon} />
         ))}

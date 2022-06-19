@@ -31,7 +31,7 @@ export default function History() {
 
     return (
         <Flex flexDir="column" pb={"20"}>
-            <NavBanner path="/" title="Delivery history" />
+            <NavBanner title="Delivery history" />
             <Heading pt="10" px="6" size="md">
             Package delivery history for Mohamad Salah.
             </Heading>

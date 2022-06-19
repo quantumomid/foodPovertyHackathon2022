@@ -13,7 +13,7 @@ export default function NavBanner({ path, title, content }) {
             <Flex alignItems="center" justifyContent="flex-start"  w="full">
             <ChevronLeftIcon 
                 w="8" h="10" mr="30vw"
-                onClick={() => router.push(path)}
+                onClick={() => {path ? router.push(path): router.back()}}
             />
             <Heading
                 mr="auto" 
