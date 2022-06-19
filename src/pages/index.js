@@ -2,8 +2,10 @@ import { Flex, Heading, Text, Button } from "@chakra-ui/react";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 export default function HomePage() {
+  const { currentUser } = useSelector(state => state.user);
   const router = useRouter();
   return (
     <Flex flexDir="column" justifyContent="center" alignItems="center" py="20" px="8">
@@ -20,7 +22,7 @@ export default function HomePage() {
         Get started to begin delivering packages to refugees and help make a difference!
       </Text>
       <Button 
-        onClick={() => router.push("/login")}
+        onClick={() => router.push(currentUser ? "/dashboard" : "/login")}
         colorScheme="teal" px="36"
       >
         Get Started
