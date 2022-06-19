@@ -15,51 +15,93 @@ const db = admin.firestore();
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
 
-app.get('/recipient/:recipientCode', async(req, res) => {
-    // Grab the text parameter.
-    const recipientCode = req.params.recipientCode;
+async function getByDocId(collectionName, docId, res) {
+   await db.collection(collectionName)
+        .doc(docId)
+        .get()
+        .then(querySnapshot => {
+            if (!querySnapshot || !querySnapshot.data()) {
+                throw new Error(collectionName.concat(' not found'));
+            }
+            res.status(200).json(querySnapshot.data())
+        })
+        .catch(error => res.status(400).send({result : error.message}));
+}
 
-    const result = await db.collection('recipient')
-        .where('united_nations_id','==', recipientCode)
+async function getByField(collectionName, fieldName, fieldId, res) {
+    await db.collection(collectionName)
+        .where(fieldName, '==', fieldId)
+        .get()
+        .then(querySnapshot => {
+            if (!querySnapshot || !querySnapshot.data()) {
+                throw new Error(collectionName.concat(' not found'));
+            }
+            res.status(200).json(querySnapshot.data())
+        })
+        .catch(error => res.status(400).send({result : error.message}));
+};
+
+async function getAll(collectionName, res){
+    await db.collection(collectionName)
+        .get()
+        .then(querySnapshot => {
+            if (!querySnapshot.docs || !querySnapshot.docs.length > 0) {
+                throw new Error(collectionName.concat(' not found'));
+            }
+            res.status(200).json(querySnapshot.docs.map(doc => doc.data()))
+        })
+        .catch(error => res.status(400).send({result : error.message}));
+}
+
+// Helper Functions
+async function checkIfDuplicateDoc(collectionName, fieldName, fieldValue) {
+    const querySnapshot = await db.collection(collectionName)
+        .where(fieldName,'==', fieldValue)
         .get();
 
-    // Send back a message that we've successfully written the message
-    res.json(result.docs[0].data());
+    if (querySnapshot.docs && querySnapshot.docs.length > 0){
+        throw new Error(collectionName + ' with ID: ' + fieldValue + ' already exists');
+    }
+}
+
+async function saveDoc(collectionName, docId, doc, res){
+    const querySnapshot = await db.collection(collectionName)
+        .doc(docId)
+        .set(doc);
+
+    if(!querySnapshot) {
+        throw new Error('Error saving' + collectionName + 'in firestore');
+    }
+
+    res.status(201).json({result : collectionName + ` with ID: ${querySnapshot} created.`});
+}
+
+
+app.get('/recipient/:recipientCode', async(req, res) => {
+    // Grab the text parameter.
+    const docId = req.params.recipientCode;
+    await getByDocId('recipient', docId, res);
 });
 
 app.get('/recipient', async(req, res) => {
     // Grab the barcode parameter.
     const barcode = req.query.barcode;
     const category = req.query.category;
-
-    let querySnapshot;
-
     if (barcode) {
-         querySnapshot = await db.collection('recipient')
-            .where('barcode', '==', barcode)
-            .get();
+        await getByField('recipient','barcode', barcode, res);
     } else if (category) {
-
         const Category = {
             FAMILY: "FAMILY",
             INDIVIDUAL: "INDIVIDUAL"
         };
-
         if (category in Category){
-            querySnapshot = await db.collection('recipient')
-                .where('category', '==', category)
-                .get();
+            await getByField('recipient','category', category, res);
         } else {
             res.status(400).end("Invalid Category!");
-            return;
         }
     } else {
-         querySnapshot = await db.collection('recipient').get();
+         await getAll('recipient', res);
     }
-
-    // Send back a message that we've successfully written the message
-    const result = querySnapshot.docs.map(doc => doc.data());
-    res.json(result);
 });
 
 app.post('/recipient', async(req, res) => {
@@ -68,18 +110,36 @@ app.post('/recipient', async(req, res) => {
     // Push the new message into Firestore using the Firebase Admin SDK.
     const recipientCode = req.body.united_nations_id;
 
-    const result = await db.collection('recipient')
-        .where('united_nations_id','==', recipientCode)
-        .get();
+    try {
+        await checkIfDuplicateDoc('recipient', 'united_nations_id', recipientCode);
+        await saveDoc('recipient', recipientCode, original, res);
+    } catch (e) {
+        res.status(400).send({result : e.message});
+    }
+});
 
-    if (result.docs.length > 0){
-        res.status(400)
-            .json({result: `Recipient with ID: ${recipientCode} already exists`});
-    } else {
-        const writeResult = await db.collection('recipient').doc(recipientCode).set(original);
-        // Send back a message that we've successfully written the message
-        //TODO get id from write result
-        res.json({result: `Recipient with ID: ${writeResult} created.`});
+
+app.get('/charity/:charityCode', async(req, res) => {
+    // Grab the text parameter.
+    const docId = req.params.charityCode;
+    await getByDocId('charity', docId, res);
+});
+
+app.get('/charity', async(req, res) => {
+    await getAll('charity', res);
+});
+
+app.post('/charity', async(req, res) => {
+    // Grab the charityCode parameter.
+    const original = req.body;
+    // Push the new message into Firestore using the Firebase Admin SDK.
+    const charityCode = req.body.charity_id;
+
+    try {
+        await checkIfDuplicateDoc('charity', 'charity_id', charityCode);
+        await saveDoc('charity', charityCode, original, res);
+    } catch (e) {
+        res.status(400).send({result : e.message});
     }
 });
 
@@ -136,4 +196,3 @@ app.post('/distributions/:united_nations_id', async(req,res) => {
 
 // Expose Express API as a single Cloud Function:
 exports.api = functions.https.onRequest(app);
-
