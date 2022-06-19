@@ -1,8 +1,10 @@
 import { Flex, Heading, Text, Button } from "@chakra-ui/react";
 import Head from "next/head";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 export default function HomePage() {
+  const router = useRouter();
   return (
     <Flex 
       flexDir="column" justifyContent="center" alignItems="center"
@@ -32,7 +34,10 @@ export default function HomePage() {
       <Text fontSize="24px" fontWeight="500" textAlign="center" pb="24">
         Get started to begin delivering packages to refugess and help make a difference!
       </Text>
-      <Button colorScheme="teal" px="36">
+      <Button 
+        onClick={() => router.push("/login")}
+        colorScheme="teal" px="36"
+      >
         Get Started
       </Button>
     </Flex>
