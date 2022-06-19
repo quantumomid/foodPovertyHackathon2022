@@ -1,5 +1,4 @@
-import { SET_CURRENT_USER } from "./userActionTypes";
-import { SET_CURRENT_RECIPIENT } from "./userActionTypes";
+import { SET_CURRENT_USER, SET_USER_TOKEN_ID,  SET_CURRENT_RECIPIENT } from "./userActionTypes";
 
 const initialState = {
     currentUser: null,
@@ -7,7 +6,6 @@ const initialState = {
 }
 
 const userReducer = (state = initialState, action) => {
-console.log(action.payload);
     switch(action.type){
         case SET_CURRENT_USER:
             return {
@@ -19,6 +17,14 @@ console.log(action.payload);
                     ...state,
                     currentRecipient: action.payload,
         }
+        case SET_USER_TOKEN_ID:
+            return {
+                ...state,
+                currentUser: {
+                    ...state.currentUser,
+                    tokenId: action.payload,
+                },
+            }
         default:
             return state
     }

@@ -3,17 +3,55 @@ const functions = require('firebase-functions');
 const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
+const { base64encode } = require('nodejs-base64');
 const app = express();
 
 // The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
 const {error} = require("firebase-functions/logger");
-admin.initializeApp();
+
+var serviceAccount = require("./serviceAccountKey.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
 
 const db = admin.firestore();
 
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
+
+function generateQrCode(united_nations_id) {
+    // Concat the UN ID and a current timestamp, Base64 encode it all
+    const concatString = `${united_nations_id}/${new Date().toISOString()}`;
+    return base64encode(concatString);
+}
+
+async function getToken(request) {
+    if (!request.headers.authorization) {
+        throw new Error("invalid or missing authorization");
+    }
+
+    const token = request.headers.authorization.replace(/^Bearer\s/, '');
+
+    return token;
+}
+
+async function verifyToken(request) {
+    try {
+        const token = await getToken(request);
+
+        if (!token) {
+            throw new Error("invalid or missing auth");
+        }
+
+        const payload = await admin.auth().verifyIdToken(token);
+        return payload !== null;
+
+    } catch (err) {
+        throw new Error("invalid or missing auth");
+    }
+}
 
 async function getByDocId(collectionName, docId, res) {
    await db.collection(collectionName)
@@ -33,10 +71,10 @@ async function getByField(collectionName, fieldName, fieldId, res) {
         .where(fieldName, '==', fieldId)
         .get()
         .then(querySnapshot => {
-            if (!querySnapshot || !querySnapshot.data()) {
+            if (!querySnapshot.docs || !querySnapshot.docs.length > 0) {
                 throw new Error(collectionName.concat(' not found'));
             }
-            res.status(200).json(querySnapshot.data())
+            res.status(200).json(querySnapshot.docs.map(doc => doc.data()))
         })
         .catch(error => res.status(400).send({result : error.message}));
 };
@@ -76,18 +114,46 @@ async function saveDoc(collectionName, docId, doc, res){
     res.status(201).json({result : collectionName + ` with ID: ${querySnapshot} created.`});
 }
 
+async function saveDocRecipient(docId, doc, res){
+    const barcode = generateQrCode(docId);
+    const querySnapshot = await db.collection('recipient')
+        .doc(docId)
+        .set({...doc, barcode});
+
+    if(!querySnapshot) {
+        throw new Error('Error saving recipient in firestore');
+    }
+
+    res.status(201).json({
+        result: `recipient with ID: ${querySnapshot} created.`,
+        barcode
+    });
+}
 
 app.get('/recipient/:recipientCode', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Grab the text parameter.
     const docId = req.params.recipientCode;
     await getByDocId('recipient', docId, res);
 });
 
 app.get('/recipient', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Grab the barcode parameter.
     const barcode = req.query.barcode;
     const category = req.query.category;
-    if (barcode) {
+    const name = req.query.name;
+    if (name) {
+        await getByField('recipient','name', name, res);
+    } else if (barcode) {
         await getByField('recipient','barcode', barcode, res);
     } else if (category) {
         const Category = {
@@ -105,6 +171,11 @@ app.get('/recipient', async(req, res) => {
 });
 
 app.post('/recipient', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Grab the text parameter.
     const original = req.body;
     // Push the new message into Firestore using the Firebase Admin SDK.
@@ -112,7 +183,7 @@ app.post('/recipient', async(req, res) => {
 
     try {
         await checkIfDuplicateDoc('recipient', 'united_nations_id', recipientCode);
-        await saveDoc('recipient', recipientCode, original, res);
+        await saveDocRecipient(recipientCode, original, res);
     } catch (e) {
         res.status(400).send({result : e.message});
     }
@@ -120,6 +191,11 @@ app.post('/recipient', async(req, res) => {
 
 
 app.get('/charity/:charityCode', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Grab the text parameter.
     const docId = req.params.charityCode;
     await getByDocId('charity', docId, res);
@@ -130,6 +206,11 @@ app.get('/charity', async(req, res) => {
 });
 
 app.post('/charity', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Grab the charityCode parameter.
     const original = req.body;
     // Push the new message into Firestore using the Firebase Admin SDK.
@@ -144,6 +225,11 @@ app.post('/charity', async(req, res) => {
 });
 
 app.post('/distributions/:united_nations_id', async(req,res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Check this UN ID is a valid one
     const recipientId = req.params.united_nations_id;
     const recipientExists = await db.collection('recipient')
@@ -152,7 +238,8 @@ app.post('/distributions/:united_nations_id', async(req,res) => {
     
     if (recipientExists.docs.length == 0) {
         res.status(400);
-        res.json({result: "Recipient of this distribution not found"})
+        res.json({result: "Recipient of this distribution not found"});
+        return;
     }
 
     const distribution_id = `${uuidv4()}`;
@@ -193,6 +280,35 @@ app.post('/distributions/:united_nations_id', async(req,res) => {
         );
     }
 });
+
+app.get('/distributions/:united_nations_id', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
+    const united_nations_id = req.params.united_nations_id;
+
+    const readResult = await db.collection('distributions').doc(united_nations_id).get();
+
+    if (!readResult.exists) {
+        res.status(404);
+        res.json({result: `Distribution history for recipient ID: ${united_nations_id} not found.`});
+    } else {
+        res.json(readResult.data());
+    }
+    
+});
+
+app.get('/distributions', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+    
+    await getAll('distributions', res);
+});
+
 
 // Expose Express API as a single Cloud Function:
 exports.api = functions.https.onRequest(app);

@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 
 export default function Navigation({ text, icon, path, ...rest }) {
   const router = useRouter();
-  console.log(path);
   return (
     <Box height="56px" shadow="md" borderWidth="1px" borderRadius="10px" {...rest} bgColor="rgba(49, 151, 149, 0.2)">
       <Flex pt="4" pl="3" justifyContent={"space-between"} textAlign="center">

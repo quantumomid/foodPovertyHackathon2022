@@ -5,31 +5,35 @@ import NavBanner from "../../components/NavBanner/NavBanner";
 import { useRouter } from "next/router";
 import { setCurrentRecipient } from "../../../redux/user/userActions";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+
 
 export default function Search() {
     const [searchField, setSearchField] = useState("");
     const [error, setError] = useState("");
     const router = useRouter();
     const dispatch = useDispatch();
-
-
+    const tokenId = useSelector(state => state.user.currentUser?.tokenId);
+console.log(tokenId);
     const handleSubmit = async ( e) => {
         e.preventDefault()
         try {
-            const response =  await fetch(`https://us-central1-foodpovertyhackathon.cloudfunctions.net/api/recipient/${searchField}`) 
-
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient/${searchField}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenId}`
+                },
+            });
             if (![ 200, 400].includes(response.status)){
                 setError('Unable to search for users at this time. Please try again later')
                 return;
             }
             const data =  await response.json();
-           if (data.result === 'recipient not found'){
+           if (data.result == 'recipient not found'){
             setError("Recipient not found. Please try again using another ID or name")
             return;
            }
-        //     set data to redux here
-       await dispatch(setCurrentRecipient(data));
-
+        dispatch(setCurrentRecipient(data));
             router.push(`users/${data.united_nations_id}`);
         } catch(error) {
             setError(error.message)  
