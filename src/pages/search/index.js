@@ -14,7 +14,6 @@ export default function Search() {
     const router = useRouter();
     const dispatch = useDispatch();
     const tokenId = useSelector(state => state.user.currentUser?.tokenId);
-console.log(tokenId);
     const handleSubmit = async ( e) => {
         e.preventDefault()
         try {
