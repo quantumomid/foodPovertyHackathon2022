@@ -4,7 +4,7 @@ import NavBanner from "../nav-banner/NavBanner";
 export default function FormPage0({ formInputs, handleFormInputChange, setFormStep }) {
     return (
         <>
-            <NavBanner path="" title="Refugee registration" />
+            <NavBanner path="/dashboard" title="Refugee registration" />
 
             <Flex flexDir="column" h="90vh" px="6" pt="10">
                 <Heading>Refugee registration</Heading>
