@@ -88,7 +88,7 @@ export default function RefugeeRegistration() {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': tokenId
+                    'Authorization': `Bearer ${tokenId}`
                 },
                 body: JSON.stringify(requestBody),
             });
