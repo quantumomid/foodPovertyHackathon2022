@@ -3,6 +3,7 @@ const functions = require('firebase-functions');
 const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
+const { base64encode, base64decode } = require('nodejs-base64');
 const app = express();
 
 // The Firebase Admin SDK to access Firestore.
@@ -14,6 +15,12 @@ const db = admin.firestore();
 
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
+
+function generateQrCode(united_nations_id) {
+    // Concat the UN ID and a current timestamp, Base64 encode it all
+    const concatString = `${united_nations_id}/${new Date().toISOString()}`;
+    return base64encode(concatString);
+}
 
 async function getByDocId(collectionName, docId, res) {
    await db.collection(collectionName)
@@ -76,6 +83,21 @@ async function saveDoc(collectionName, docId, doc, res){
     res.status(201).json({result : collectionName + ` with ID: ${querySnapshot} created.`});
 }
 
+async function saveDocRecipient(docId, doc, res){
+    const barcode = generateQrCode(docId);
+    const querySnapshot = await db.collection('recipient')
+        .doc(docId)
+        .set({...doc, barcode});
+
+    if(!querySnapshot) {
+        throw new Error('Error saving recipient in firestore');
+    }
+
+    res.status(201).json({
+        result: `recipient with ID: ${querySnapshot} created.`,
+        barcode
+    });
+}
 
 app.get('/recipient/:recipientCode', async(req, res) => {
     // Grab the text parameter.
@@ -115,7 +137,7 @@ app.post('/recipient', async(req, res) => {
 
     try {
         await checkIfDuplicateDoc('recipient', 'united_nations_id', recipientCode);
-        await saveDoc('recipient', recipientCode, original, res);
+        await saveDocRecipient(recipientCode, original, res);
     } catch (e) {
         res.status(400).send({result : e.message});
     }
