@@ -56,7 +56,7 @@ export default function FormPage1({ familyOrIndividual, primaryDetails, handlePr
 
                 <Button 
                     colorScheme="teal"
-                    mt="auto"
+                    mt="auto" py="24px"
                     onClick={() => setFormStep(familyOrIndividual==="individual" ? 3: 2)} // Individuals go straight to step 3
                 >
                         Continue

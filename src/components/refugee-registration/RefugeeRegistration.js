@@ -4,6 +4,7 @@ import FormPage0 from "./FormPage0";
 import FormPage1 from "./FormPage1";
 import FormPage2 from "./FormPage2";
 import FormPage3 from "./FormPage3";
+import RegistrationSummary from "./RegistrationSummary";
 
 export default function RefugeeRegistration() {
     const [ formInputs, setFormInputs ] = useState({ 
@@ -78,7 +79,20 @@ export default function RefugeeRegistration() {
                         handlePrimaryDetailsChange={handlePrimaryDetailsChange}
                         setFormStep={setFormStep} 
                     />
-                );                
+                );
+            case 4:
+                return (
+                    <RegistrationSummary
+                        familyOrIndividual={formInputs.familyOrIndividual.toLowerCase()}
+                        formInputs={formInputs}
+                        primaryDetails={primaryDetails}
+                        numberOfAdults={numberOfAdults} 
+                        numberOfChildren={numberOfChildren} 
+                        numberOfInfants={numberOfInfants} 
+                        numberOfElders={numberOfElders} s
+                        setFormStep={setFormStep} 
+                    />
+                );                    
             case 0:
             default:
                 return (

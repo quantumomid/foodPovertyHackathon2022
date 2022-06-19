@@ -50,7 +50,7 @@ export default function FormPage2({ numberOfAdults, setNumberOfAdults, numberOfC
 
                 <Button 
                     colorScheme="teal"
-                    mt="auto"
+                    mt="auto" py="24px"
                     onClick={() => setFormStep(3)}
                 >
                         Continue

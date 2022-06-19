@@ -11,11 +11,11 @@ export default function FormPage3({ familyOrIndividual, primaryDetails, handlePr
                 <Heading>
                     { familyOrIndividual==="individual" ? "Individual registration" : "Family registration"}
                 </Heading>
-                <Text fontSize="20px" fontWeight="500">
+                <Text fontSize="20px" fontWeight="500" pb="10">
                     { familyOrIndividual==="individual" ? "Do they have any additional needs?" : "Does this family have any additional needs?"}
                 </Text>
 
-                <FormControl>
+                <FormControl pb="10">
                     <FormLabel htmlFor="medicalRequirements">Medical requirements</FormLabel>
                     <Input 
                         id="medicalRequirements" name="medicalRequirements" type="text" bg="white"
@@ -35,8 +35,8 @@ export default function FormPage3({ familyOrIndividual, primaryDetails, handlePr
 
                 <Button 
                     colorScheme="teal"
-                    mt="auto"
-                    onClick={() => setFormStep(3)}
+                    mt="auto" py="24px"
+                    onClick={() => setFormStep(4)}
                 >
                         Continue
                 </Button>

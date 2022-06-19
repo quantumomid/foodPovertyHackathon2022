@@ -47,7 +47,7 @@ export default function FormPage0({ formInputs, handleFormInputChange, setFormSt
 
                 <Button 
                     colorScheme="teal"
-                    mt="auto"
+                    mt="auto" py="24px"
                     onClick={() => setFormStep(1)}
                 >
                         Continue
