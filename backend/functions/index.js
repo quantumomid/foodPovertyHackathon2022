@@ -87,7 +87,10 @@ app.get('/recipient', async(req, res) => {
     // Grab the barcode parameter.
     const barcode = req.query.barcode;
     const category = req.query.category;
-    if (barcode) {
+    const name = req.query.name;
+    if (name) {
+        await getByField('recipient','name', name, res);
+    } else if (barcode) {
         await getByField('recipient','barcode', barcode, res);
     } else if (category) {
         const Category = {
