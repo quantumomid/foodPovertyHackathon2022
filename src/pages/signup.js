@@ -19,25 +19,7 @@ export default function Signup() {
     setError("");
     e.preventDefault();
     try {
-      console.log(email, password);
       await createUserWithEmailAndPassword(auth, email, password);
-      //  save user to firestore here
-      /* 
-
-       const user = auth().currentUser;
-        await user.updateProfile({
-          displayName: username,
-        });
-      
-     
-        const uniqueUserId = auth().currentUser?.uid;
-       await db.collection("users").doc(uniqueUserId).set({
-          email: email,
-          forename: firstName,
-          surname: lastName,
-          charity: volunteerCharity
-          camp: volunteerCamp       
-      */
       setEmail("");
       setPassword("");
       setFirstName("");
@@ -50,10 +32,6 @@ export default function Signup() {
       setError(error.message);
     }
   };
-
-  // const rememberMe = () => {
-  //   auth().setPersistence(e.target.checked ? auth.Auth.Persistence.LOCAL : auth.Auth.Persistence.SESSION);
-  // };
 
   return (
     <Flex flexDir="column" alignItems="start" py="10" px="8">
