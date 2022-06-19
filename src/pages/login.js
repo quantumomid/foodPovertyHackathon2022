@@ -7,12 +7,11 @@ export default function LogInPage() {
 
     return (
         <Flex flexDir="column">
-            <NavBanner path="/" title="Company name" />
+            <NavBanner path="/" title="AcceleraidAid" />
             <Heading pt="10" px="6" fontSize="24px">
                 Log in to your volunteer account
             </Heading>
             <LogInForm />
-
         </Flex>
     )
 }
