@@ -1,10 +1,16 @@
-import { SET_CURRENT_USER } from "./userActionTypes";
+import { SET_CURRENT_USER, SET_CURRENT_RECIPIENT } from "./userActionTypes";
 
 export const setCurrentUser = user => async (dispatch) => {
-    // user object includes saved recipes too - therefore this will be set too
-    // upon successful login
     dispatch({
         type: SET_CURRENT_USER,
+        payload: user
+    }); 
+};
+
+export const setCurrentRecipient = user => async (dispatch) => {
+    console.log('U S E R', user);
+    dispatch({
+        type: SET_CURRENT_RECIPIENT,
         payload: user
     }); 
 };
