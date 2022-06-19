@@ -3,13 +3,18 @@ const functions = require('firebase-functions');
 const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
-const { base64encode, base64decode } = require('nodejs-base64');
+const { base64encode } = require('nodejs-base64');
 const app = express();
 
 // The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
 const {error} = require("firebase-functions/logger");
-admin.initializeApp();
+
+var serviceAccount = require("./serviceAccountKey.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
 
 const db = admin.firestore();
 
@@ -20,6 +25,33 @@ function generateQrCode(united_nations_id) {
     // Concat the UN ID and a current timestamp, Base64 encode it all
     const concatString = `${united_nations_id}/${new Date().toISOString()}`;
     return base64encode(concatString);
+}
+
+async function getToken(request) {
+    if (!request.headers.authorization) {
+        throw new Error("invalid or missing authorization");
+    }
+
+    const token = request.headers.authorization.replace(/^Bearer\s/, '');
+
+    return token;
+}
+
+async function verifyToken(request) {
+    try {
+        const token = await getToken(request);
+
+        if (!token) {
+            throw new Error("invalid or missing auth");
+        }
+
+        const payload = await admin.auth().verifyIdToken(token);
+        console.log(payload.uid);
+        return payload !== null;
+
+    } catch (err) {
+        throw new Error("invalid or missing auth");
+    }
 }
 
 async function getByDocId(collectionName, docId, res) {
@@ -100,12 +132,22 @@ async function saveDocRecipient(docId, doc, res){
 }
 
 app.get('/recipient/:recipientCode', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Grab the text parameter.
     const docId = req.params.recipientCode;
     await getByDocId('recipient', docId, res);
 });
 
 app.get('/recipient', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Grab the barcode parameter.
     const barcode = req.query.barcode;
     const category = req.query.category;
@@ -130,6 +172,11 @@ app.get('/recipient', async(req, res) => {
 });
 
 app.post('/recipient', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Grab the text parameter.
     const original = req.body;
     // Push the new message into Firestore using the Firebase Admin SDK.
@@ -145,6 +192,11 @@ app.post('/recipient', async(req, res) => {
 
 
 app.get('/charity/:charityCode', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Grab the text parameter.
     const docId = req.params.charityCode;
     await getByDocId('charity', docId, res);
@@ -155,6 +207,11 @@ app.get('/charity', async(req, res) => {
 });
 
 app.post('/charity', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Grab the charityCode parameter.
     const original = req.body;
     // Push the new message into Firestore using the Firebase Admin SDK.
@@ -169,6 +226,11 @@ app.post('/charity', async(req, res) => {
 });
 
 app.post('/distributions/:united_nations_id', async(req,res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     // Check this UN ID is a valid one
     const recipientId = req.params.united_nations_id;
     const recipientExists = await db.collection('recipient')
@@ -221,6 +283,11 @@ app.post('/distributions/:united_nations_id', async(req,res) => {
 });
 
 app.get('/distributions/:united_nations_id', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+
     const united_nations_id = req.params.united_nations_id;
 
     const readResult = await db.collection('distributions').doc(united_nations_id).get();
@@ -235,6 +302,11 @@ app.get('/distributions/:united_nations_id', async(req, res) => {
 });
 
 app.get('/distributions', async(req, res) => {
+    await verifyToken(req).catch((error) => {
+        res.status(401).send({result: error.message});
+        throw new Error();
+    });
+    
     await getAll('distributions', res);
 });
 
