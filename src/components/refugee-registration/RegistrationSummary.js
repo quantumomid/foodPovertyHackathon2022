@@ -64,7 +64,7 @@ export default function RegistrationSummary({ familyOrIndividual, setFormStep, p
                         colorScheme="teal"
                         py="24px"
                         mt={familyOrIndividual==="individual" ? "auto" : "unset"}
-                        // onClick={onSubmit}
+                        onClick={onConfirm}
                     >
                             Confirm
                 </Button>
