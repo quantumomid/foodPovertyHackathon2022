@@ -82,18 +82,25 @@ export default function RefugeeRegistration() {
             }
         }
         try {
-            await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient`, {
                 method: "POST",
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(requestBody),
             });
-            setFormInputs(initialFormInputs);
-            setPrimaryDetails(initialPrimaryDetails);
-            setSubmissionStatus("success");
-            setIsLoading(false);
-            router.push("/dashboard");
+
+            if (response && response.ok) {
+                setFormInputs(initialFormInputs);
+                setPrimaryDetails(initialPrimaryDetails);
+                setSubmissionStatus("success");
+                setIsLoading(false);
+                router.push("/dashboard");
+            } else {
+                const responseJSON = await response.json();
+                setError(responseJSON.result);
+                setIsLoading(false);
+            }
 
         } catch (error) {
             console.log(error);
