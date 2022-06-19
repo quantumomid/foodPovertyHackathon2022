@@ -11,7 +11,7 @@ import RegistrationSummary from "./RegistrationSummary";
 
 export default function RefugeeRegistration() {
     const router = useRouter();
-    const tokenId = useSelector(state => state.user.currentUser.tokenId);
+    const tokenId = useSelector(state => state.user.currentUser?.tokenId);
 
     const initialFormInputs = { 
         familyOrIndividual: "",
