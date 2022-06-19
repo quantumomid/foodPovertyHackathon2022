@@ -1,5 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 import { useState } from "react";
+import Notifications from "../notifications/Notifications";
 import FormPage0 from "./FormPage0";
 import FormPage1 from "./FormPage1";
 import FormPage2 from "./FormPage2";
@@ -7,18 +8,19 @@ import FormPage3 from "./FormPage3";
 import RegistrationSummary from "./RegistrationSummary";
 
 export default function RefugeeRegistration() {
-    const [ formInputs, setFormInputs ] = useState({ 
+    const initialFormInputs = { 
         familyOrIndividual: "",
         camp: "",
         tentId: "",
-     });
+    }
+    const [ formInputs, setFormInputs ] = useState(initialFormInputs);
 
      const [ numberOfAdults, setNumberOfAdults ] = useState(0);
      const [ numberOfChildren, setNumberOfChildren ] = useState(0);
      const [ numberOfInfants, setNumberOfInfants ] = useState(0);
      const [ numberOfElders, setNumberOfElders ] = useState(0);
 
-     const [ primaryDetails, setPrimaryDetails ] = useState({
+     const initialPrimaryDetails = {
         firstname: "",
         surname: "",
         DOB: "",
@@ -26,9 +28,14 @@ export default function RefugeeRegistration() {
         contactNumber: "",
         medicalRequirements: "",
         otherSpecialNeeds: "",
-    })
+    }
+     const [ primaryDetails, setPrimaryDetails ] = useState(initialPrimaryDetails)
 
      const [ formStep, setFormStep ] = useState(0);
+
+     const [isLoading, setIsLoading] = useState(false);
+     const [error, setError] = useState("");
+     const [submissionStatus, setSubmissionStatus] = useState("");
 
     const handleFormInputChange = (e) => {
         const { name, value } = e.target;
@@ -44,6 +51,56 @@ export default function RefugeeRegistration() {
             ...currentPrimaryDetails,
             [name]: value
         }))
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        setIsLoading(true);
+        setError("");
+        setSubmissionStatus("");
+
+        const requestBody = {
+            united_nations_id: primaryDetails.unID,
+            category: formInputs.familyOrIndividual,
+            forename: primaryDetails.firstname,
+            surname: primaryDetails.surname,
+            notes: [
+                primaryDetails.medicalRequirements,
+                primaryDetails.otherSpecialNeeds,
+            ]
+        }
+        if (formInputs.familyOrIndividual.toLowerCase()==="family") {
+            requestBody.members= {
+                parents: numberOfAdults,
+                children: numberOfChildren,
+                elderly: numberOfElders,
+                infant: numberOfInfants
+            }
+        }
+        try {
+            await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody),
+            });
+            setFormInputs(initialFormInputs);
+            setPrimaryDetails(initialPrimaryDetails);
+            setSubmissionStatus("success");
+            setIsLoading(false);
+
+        } catch (error) {
+            console.log(error);
+            setError(error.message);
+            setIsLoading(false);
+        }
+    }
+
+    const handleClose = () => {
+        setError("");
+        setSubmissionStatus("");
     }
 
     const renderFormStep = () => {
@@ -90,6 +147,8 @@ export default function RefugeeRegistration() {
                         numberOfInfants={numberOfInfants} 
                         numberOfElders={numberOfElders} s
                         setFormStep={setFormStep} 
+                        onSubmit={handleSubmit}
+                        isLoading={isLoading}
                     />
                 );                    
             case 0:
@@ -107,6 +166,9 @@ export default function RefugeeRegistration() {
     return (
         <Flex flexDir="column">
             {renderFormStep()}
+            <Notifications error={error} submissionStatus={submissionStatus} handleClose={handleClose} 
+                successMessage="The refugee has been successfully registered."
+            />
         </Flex>
     )
 }
