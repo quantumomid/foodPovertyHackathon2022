@@ -106,7 +106,6 @@ export default function RefugeeRegistration() {
             }
 
         } catch (error) {
-            console.log(error);
             setError(error.message);
             setIsLoading(false);
         }

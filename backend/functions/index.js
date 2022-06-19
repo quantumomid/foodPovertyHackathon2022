@@ -46,7 +46,6 @@ async function verifyToken(request) {
         }
 
         const payload = await admin.auth().verifyIdToken(token);
-        console.log(payload.uid);
         return payload !== null;
 
     } catch (err) {

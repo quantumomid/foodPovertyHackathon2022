@@ -1,5 +1,5 @@
 import { Flex, Heading, Button } from "@chakra-ui/react";
-import NavBanner from "../components/nav-banner/NavBanner";
+import NavBanner from "../components/NavBanner/NavBanner";
 import { signOut } from "@firebase/auth";
 import { auth } from "../../firebase/firebaseUtils";
 import withAuthenticatedHOC from "../components/authentication/withAuthenticationHOC";

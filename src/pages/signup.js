@@ -26,27 +26,9 @@ export default function Signup() {
     setError("");
     e.preventDefault();
     try {
-      console.log(email, password);
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
       await createUserProfileDocument(user, { firstName, lastName, email, volunteerCharity, volunteerCamp });
 
-      //  save user to firestore here
-      /* 
-
-       const user = auth().currentUser;
-        await user.updateProfile({
-          displayName: username,
-        });
-      
-     
-        const uniqueUserId = auth().currentUser?.uid;
-       await db.collection("users").doc(uniqueUserId).set({
-          email: email,
-          forename: firstName,
-          surname: lastName,
-          charity: volunteerCharity
-          camp: volunteerCamp       
-      */
       setEmail("");
       setPassword("");
       setFirstName("");
@@ -55,14 +37,9 @@ export default function Signup() {
       setVolunteerCamp("");
       router.push("/dashboard");
     } catch (error) {
-      console.log(error.message);
       setError(error.message);
     }
   };
-
-  // const rememberMe = () => {
-  //   auth().setPersistence(e.target.checked ? auth.Auth.Persistence.LOCAL : auth.Auth.Persistence.SESSION);
-  // };
 
   return (
     <>
