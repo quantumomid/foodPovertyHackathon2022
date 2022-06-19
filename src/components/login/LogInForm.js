@@ -6,8 +6,11 @@ import PasswordInput from "./PasswordInput";
 import { auth } from "../../../firebase/firebaseUtils";
 
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { setUserTokenId } from "../../../redux/user/userActions";
 
 export default function LogInForm() {
+    const dispatch = useDispatch();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
@@ -15,7 +18,9 @@ export default function LogInForm() {
     const handleLoginSubmit = async(e) => {
         e.preventDefault();
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            const user = await signInWithEmailAndPassword(auth, email, password);
+            const tokenId = user._tokenResponse.idToken;
+            dispatch(setUserTokenId(tokenId));            
             setEmail("");
             setPassword("");
             await router.push("/dashboard");

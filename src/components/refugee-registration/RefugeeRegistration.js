@@ -1,6 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import Notifications from "../notifications/Notifications";
 import FormPage0 from "./FormPage0";
 import FormPage1 from "./FormPage1";
@@ -10,6 +11,7 @@ import RegistrationSummary from "./RegistrationSummary";
 
 export default function RefugeeRegistration() {
     const router = useRouter();
+    const tokenId = useSelector(state => state.user.currentUser?.tokenId);
 
     const initialFormInputs = { 
         familyOrIndividual: "",
@@ -82,18 +84,26 @@ export default function RefugeeRegistration() {
             }
         }
         try {
-            await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/recipient`, {
                 method: "POST",
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenId}`
                 },
                 body: JSON.stringify(requestBody),
             });
-            setFormInputs(initialFormInputs);
-            setPrimaryDetails(initialPrimaryDetails);
-            setSubmissionStatus("success");
-            setIsLoading(false);
-            router.push("/dashboard");
+
+            if (response && response.ok) {
+                setFormInputs(initialFormInputs);
+                setPrimaryDetails(initialPrimaryDetails);
+                setSubmissionStatus("success");
+                setIsLoading(false);
+                router.push("/dashboard");
+            } else {
+                const responseJSON = await response.json();
+                setError(responseJSON.result);
+                setIsLoading(false);
+            }
 
         } catch (error) {
             console.log(error);
