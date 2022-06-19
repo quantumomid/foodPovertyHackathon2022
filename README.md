@@ -1,3 +1,5 @@
+# Frontend
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
@@ -32,3 +34,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+# Backend
+
+The `/backend` folder of the repo contains the Firebase Functions that were used to create the backend API endpoints.
+
+## Getting started
+
+`npm install -g firebase-tools`
+
+Once you are added as a contributor to our team's foodPovertyHackathon Firebase project, run `firebase login` to login and authenticate your firebase CLI tool.
+
+## Run the functions locally
+
+Follow the instructions [here:](https://firebase.google.com/docs/functions/get-started#emulate-execution-of-your-functions) running the emulator command from the `/backend` folder
+
+## Deploy updated functions to Prod
+
+Run the command `firebase deploy --only functions` from the `/backend/functions` folder.
+
+
