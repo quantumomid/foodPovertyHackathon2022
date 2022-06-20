@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { auth, createUserProfileDocument } from "../../firebase/firebaseUtils";
-import NavBanner from "../components/Nav-banner/NavBanner";
+import NavBanner from "../components/nav-banner/NavBanner";
 
 export default function Signup() {
   const router = useRouter();
