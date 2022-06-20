@@ -66,7 +66,7 @@ export default function History() {
 
                 <ReusableInfoCard title="Basic Universal Pack" deliveredOn={"12/06/2022"} deliveredBy={"Radi Choudhury"} charity="One Nation" />
                 <ReusableInfoCard title="Infant Pack (2)" deliveredOn={"12/05/2022"} deliveredBy={"Khadija Nur"} charity="Muslim Hands" />
-                <ReusableInfoCard title="Csustom Pack" deliveredOn={"12/04/2022"} deliveredBy={"Ameera Al-shaibani"} charity="One Nation" />
+                <ReusableInfoCard title="Custom Pack" deliveredOn={"12/04/2022"} deliveredBy={"Ameera Al-shaibani"} charity="One Nation" />
                 <ReusableInfoCard title="Basic Universal Pack" deliveredOn={"12/02/2022"} deliveredBy={"Omid Wakili"} charity="Muslim Hands" />
                 <ReusableInfoCard title="Winter Pack" deliveredOn={"12/12/2021"} deliveredBy={"Mashkoor Ahmed"} charity="One Nation" />
             </VStack>
