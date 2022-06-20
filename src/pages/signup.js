@@ -80,9 +80,9 @@ export default function Signup() {
               <Select placeholder={volunteerCharity} onChange={(e) => setVolunteerCharity(e.target.value)} bg="white">
                 {/* this would be an arrray coming from what we have in the db */}
                 {/*  array.map(....) */}
-                <option value="option1">One Nation</option>
-                <option value="option2">Muslim Hands</option>
-                <option value="option3">Beit al Baraka</option>
+                <option value="One Nation">One Nation</option>
+                <option value="Muslim Hands">Muslim Hands</option>
+                <option value="Beit al Baraka">Beit al Baraka</option>
               </Select>
             </FormControl>
 
@@ -93,9 +93,9 @@ export default function Signup() {
               <Select placeholder={volunteerCamp} onChange={(e) => setVolunteerCamp(e.target.value)} bg="white">
                 {/* this would be an arrray coming from what we have in the db */}
                 {/*  array.map(....) */}
-                <option value="option1">Lebanon inner city camp</option>
-                <option value="option2">Lebanon outer city camp</option>
-                <option value="option3">Beddawi Camp</option>
+                <option value="Lebanon inner city camp">Lebanon inner city camp</option>
+                <option value="Lebanon outer city camp">Lebanon outer city camp</option>
+                <option value="Beddawi Camp">Beddawi Camp</option>
               </Select>
             </FormControl>
 
