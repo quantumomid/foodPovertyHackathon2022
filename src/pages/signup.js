@@ -81,8 +81,8 @@ export default function Signup() {
                 {/* this would be an arrray coming from what we have in the db */}
                 {/*  array.map(....) */}
                 <option value="option1">One Nation</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
+                <option value="option2">Muslim Hands</option>
+                <option value="option3">Beit al Baraka</option>
               </Select>
             </FormControl>
 
@@ -94,8 +94,8 @@ export default function Signup() {
                 {/* this would be an arrray coming from what we have in the db */}
                 {/*  array.map(....) */}
                 <option value="option1">Lebanon inner city camp</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
+                <option value="option2">Lebanon outer city camp</option>
+                <option value="option3">Beddawi Camp</option>
               </Select>
             </FormControl>
 

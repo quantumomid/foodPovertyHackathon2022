@@ -1,4 +1,4 @@
-import { Flex, Heading, Text, Button } from "@chakra-ui/react";
+import { Flex, Heading, Text, Button, Fade } from "@chakra-ui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
@@ -7,6 +7,7 @@ export default function HomePage() {
   const { currentUser } = useSelector(state => state.user);
   const router = useRouter();
   return (
+    <Fade in={"true"}  style={{ transitionDuration: "2000ms" }}>
     <Flex flexDir="column" justifyContent="center" alignItems="center" py="20" px="8">
       <Flex flexDir="column" justifyContent="center" pb="5">
           <Image src="/images/logo.png" alt="Logo" width={170} height={170} objectFit="contain" />
@@ -24,5 +25,7 @@ export default function HomePage() {
         Get Started
       </Button>
     </Flex>
+    </Fade>
+
   );
 }

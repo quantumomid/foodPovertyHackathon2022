@@ -5,6 +5,7 @@ export const theme = extendTheme({
       global: () => ({
         body: {
           bg: "#FFFCF2",
+          font: "poppins",
         }
       })
     },
