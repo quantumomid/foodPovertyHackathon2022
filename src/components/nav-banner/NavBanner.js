@@ -6,14 +6,14 @@ export default function NavBanner({ path, title, content }) {
     const router = useRouter();
     return (
         <Flex 
-            bg="white"  direction={"column"}
+        direction={"column"}
             alignItems="center" justifyContent="center"
-            w="full"
+            bg="white" py="2" w="full"
         >
-            <Flex alignItems="center" justifyContent="center">
+            <Flex alignItems="center" justifyContent="flex-start"  w="full">
             <ChevronLeftIcon 
-                w="8" h="10" mr="auto"
-                onClick={() => router.push(path)}
+                w="8" h="10" mr="30vw"
+                onClick={() => {path ? router.push(path): router.back()}}
             />
             <Heading
                 mr="auto" 

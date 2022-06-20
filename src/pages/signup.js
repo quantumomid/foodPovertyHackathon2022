@@ -43,7 +43,7 @@ export default function Signup() {
 
   return (
     <>
-      <NavBanner path="/login" />
+      <NavBanner path="/" title="AcceleraidAid" />
       <Flex flexDir="column" alignItems="start" py="10" px="8">
         <Heading pb="4" size="md">
           Create a volunteer account

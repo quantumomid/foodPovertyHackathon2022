@@ -43,7 +43,7 @@ export default function Search() {
     return (
         <Flex flexDir="column" >
             <form onSubmit={handleSubmit}>
-            <NavBanner path="/search" title="Refugee search" content={
+            <NavBanner path="/dashboard" title="Refugee search" content={
                  <FormControl px="30" py="5" id="refuregeeSearch" isRequired>
                 {/* pressing enter should submit */}
                     <InputGroup>

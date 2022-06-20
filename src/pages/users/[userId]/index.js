@@ -3,7 +3,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { BsPersonFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
-import UserInfoCard from '../../components/Card/UserInfoCard'
+import UserInfoCard from '../../../components/Card/UserInfoCard'
+import NavBanner from "../../../components/nav-banner/NavBanner";
 
 export default function UserPage() {
   const [userData, setUserData] = useState(null)
@@ -44,7 +45,8 @@ export default function UserPage() {
   }
 
   return (
-    <Flex flexDir="column" >
+    <Flex flexDir="column" pb={20} >
+            <NavBanner path="/search" title="Refugee details" />
 
       {error && !userData && <Text>{error}</Text>}
       {userData &&
@@ -68,7 +70,7 @@ export default function UserPage() {
               <UserInfoCard topText="12/06/2022" bottomText="Basic Universal Pack" />
               <UserInfoCard topText="12/05/2022" bottomText="Basic Universal Pack" />
               <UserInfoCard topText="12/05/2022" bottomText="Baby Pack" />
-              <Button colorScheme="teal" onClick={() => router.push('/history')} size='sm' width={"40vw"}> View full history</Button>
+              <Button colorScheme="teal" onClick={() => router.push(`${userId}/history`)} size='sm' width={"40vw"}> View full history</Button>
             </VStack>
 
             <VStack
@@ -77,8 +79,8 @@ export default function UserPage() {
               <Heading size={"md"}>
                 Location information
               </Heading>
-              <UserInfoCard topText="12/06/2022" bottomText="Basic Universal Pack" />
-              <UserInfoCard topText="12/06/2022" bottomText="Basic Universal Pack" />
+              <UserInfoCard topText="Camp" bottomText={userData.camp} />
+              <UserInfoCard topText="Tent ID" bottomText={userData.tent} />
             </VStack>
 
             <VStack
@@ -86,8 +88,9 @@ export default function UserPage() {
               align='stretch'>
               <Heading size={"md"}>
                 Basic details</Heading>
-              <UserInfoCard topText="12/06/2022" bottomText="Basic Universal Pack" />
-              <UserInfoCard topText="12/06/2022" bottomText="Basic Universal Pack" />
+              <UserInfoCard topText="United Nations Identity Number" bottomText={userData.united_nations_id} />
+              <UserInfoCard topText="Date of birth" bottomText="15/06/1992" />
+              <UserInfoCard topText="Contact number" bottomText={userData.contact_number} />
             </VStack>
             
             <VStack
@@ -95,8 +98,10 @@ export default function UserPage() {
               align='stretch'>
               <Heading size={"md"}>
                 Family details</Heading>
-                <UserInfoCard topText="12/06/2022" bottomText="Basic Universal Pack" />
-              <UserInfoCard topText="12/06/2022" bottomText="Basic Universal Pack" />
+                <UserInfoCard topText="Adults" bottomText="3" />
+              <UserInfoCard topText="Children" bottomText="5" />
+                <UserInfoCard topText="Infants" bottomText="1" />
+              <UserInfoCard topText="Elders" bottomText="1" />
             </VStack>
             
             <VStack
@@ -104,8 +109,8 @@ export default function UserPage() {
               align='stretch'>
               <Heading size={"md"}>
                 Additional needs</Heading>
-                <UserInfoCard topText="12/06/2022" bottomText="Basic Universal Pack" />
-                <UserInfoCard topText="12/06/2022" bottomText="Basic Universal Pack" />
+                <UserInfoCard topText="Medical requirements" bottomText="Mother has type 2 diabetes, she requires insulin" />
+                <UserInfoCard topText="Other special needs" bottomText="N/A" />
 
             </VStack>
           </VStack>
